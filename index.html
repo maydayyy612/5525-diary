@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>5525 回到那一天 V8</title>
+<title>5525 回到那一天 V9</title>
 
 <style>
 body{
@@ -11,25 +11,69 @@ margin:0;
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
 background:#05050a;
 color:#fff;
-overflow-x:hidden;
+overflow:hidden;
 }
 
-/* ===== 顶部 ===== */
+/* ================= 开场电影 ================= */
+#intro{
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:99999;
+animation:fadeOut 4s ease 4s forwards;
+}
+
+.glow{
+font-size:28px;
+letter-spacing:3px;
+font-weight:700;
+text-shadow:0 0 25px rgba(255,0,60,0.6);
+animation:pulse 1.5s ease-in-out infinite alternate;
+}
+
+.sub{
+margin-top:10px;
+font-size:12px;
+opacity:.6;
+}
+
+@keyframes pulse{
+from{transform:scale(1);opacity:.6}
+to{transform:scale(1.06);opacity:1}
+}
+
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden}
+}
+
+/* ================= 主系统 ================= */
+#app{
+display:none;
+height:100vh;
+overflow:hidden;
+}
+
+/* 顶部 */
 header{
-position:sticky;
+position:fixed;
 top:0;
-padding:16px;
-background:rgba(10,10,20,.7);
-backdrop-filter: blur(10px);
+width:100%;
+padding:14px;
+background:rgba(10,10,20,.6);
+backdrop-filter: blur(12px);
 z-index:10;
-border-bottom:1px solid #222;
 }
 
-/* ===== 模式切换 ===== */
+/* 模式 */
 .tabs{
 display:flex;
 gap:10px;
-padding:10px 16px;
+padding:10px 14px;
+margin-top:50px;
 }
 
 .tab{
@@ -37,15 +81,19 @@ padding:6px 12px;
 border-radius:999px;
 background:#1a1a26;
 font-size:12px;
+opacity:.5;
 cursor:pointer;
-opacity:.6;
 }
-.tab.active{opacity:1;background:#ff2d55;}
+.tab.active{opacity:1;background:#ff2d55}
 
-/* ===== 容器 ===== */
-.container{padding:16px;padding-bottom:120px;}
+/* 容器 */
+.container{
+padding:14px;
+overflow:auto;
+height:calc(100vh - 110px);
+}
 
-/* ===== 卡片 ===== */
+/* 卡片 */
 .card{
 background:linear-gradient(135deg,#1a1a26,#0e0e18);
 padding:14px;
@@ -54,7 +102,7 @@ margin-bottom:12px;
 border:1px solid #222;
 }
 
-/* ===== 输入 ===== */
+/* 输入 */
 input,textarea{
 width:100%;
 margin-top:8px;
@@ -65,7 +113,7 @@ background:#141420;
 color:#fff;
 }
 
-/* ===== 按钮 ===== */
+/* 按钮 */
 button{
 padding:10px 12px;
 border:none;
@@ -75,11 +123,10 @@ background:#ff2d55;
 color:#fff;
 }
 
-/* ===== 时间线 ===== */
+/* ================= 时间线 ================= */
 .timeline{
 border-left:2px solid #ff2d55;
 padding-left:16px;
-margin-top:10px;
 }
 
 .item{
@@ -91,22 +138,20 @@ cursor:pointer;
 .dot{
 position:absolute;
 left:-20px;
-top:12px;
+top:10px;
 width:10px;
 height:10px;
-background:#ff2d55;
 border-radius:50%;
+background:#ff2d55;
 box-shadow:0 0 10px #ff2d55;
 }
 
-.small{opacity:.7;font-size:12px}
-
-/* ===== 地图（巡演线） ===== */
+/* ================= 地图 ================= */
 .map{
 position:relative;
-height:300px;
-background:radial-gradient(circle at center,#111,#05050a);
+height:320px;
 border-radius:16px;
+background:radial-gradient(circle at center,#111,#05050a);
 overflow:hidden;
 }
 
@@ -119,51 +164,46 @@ font-size:12px;
 transform:translate(-50%,-50%);
 }
 
-.line{
-position:absolute;
-height:2px;
-background:#ff2d55;
-opacity:.4;
-transform-origin:left;
-}
-
-/* ===== 沉浸页 ===== */
+/* ================= 沉浸页 ================= */
 .modal{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.9);
+background:rgba(0,0,0,.92);
 display:none;
 flex-direction:column;
 padding:20px;
+z-index:999;
 overflow:auto;
-z-index:99;
-}
-
-.modal h2{
-margin-top:10px;
 }
 
 .close{
 position:fixed;
 top:20px;
 right:20px;
+width:40px;
+height:40px;
+border-radius:50%;
 background:#ff2d55;
 border:none;
-border-radius:50%;
-width:40px;height:40px;
+color:#fff;
 }
-
-img{
-width:100%;
-border-radius:12px;
-margin-top:10px;
-}
+img{width:100%;border-radius:12px;margin-top:10px}
+.small{opacity:.7;font-size:12px}
 </style>
 </head>
 
 <body>
 
-<header>🎭 5525 · 回到那一天（V8 沉浸巡演版）</header>
+<!-- 🎬 开场电影 -->
+<div id="intro">
+  <div class="glow">5525 回到那一天</div>
+  <div class="sub">Tour Memory System · Loading Memories...</div>
+</div>
+
+<!-- 🎭 主应用 -->
+<div id="app">
+
+<header>🎭 5525 · V9 沉浸巡演电影</header>
 
 <div class="tabs">
 <div class="tab active" onclick="switchTab('timeline')">时间线</div>
@@ -172,28 +212,30 @@ margin-top:10px;
 
 <div class="container">
 
-<!-- ===== 输入 ===== -->
+<!-- 输入 -->
 <div class="card">
-<h3>➕ 添加演出</h3>
+<h3>➕ 新增演出记忆</h3>
 <input id="title" placeholder="演出名称"/>
-<input id="city" placeholder="城市（如 上海 / 东京）"/>
+<input id="city" placeholder="城市"/>
 <input id="date" type="date"/>
-<textarea id="note" placeholder="记忆 / 现场感受"></textarea>
+<textarea id="note" placeholder="现场记忆"></textarea>
 <input id="img" placeholder="图片链接（可选）"/>
-<button onclick="add()">加入巡演记忆</button>
+<button onclick="add()">加入巡演</button>
 </div>
 
-<!-- ===== 时间线 ===== -->
+<!-- 时间线 -->
 <div id="timelineView"></div>
 
-<!-- ===== 地图 ===== -->
+<!-- 地图 -->
 <div id="mapView" style="display:none">
 <div class="map" id="map"></div>
 </div>
 
 </div>
 
-<!-- ===== 沉浸页 ===== -->
+</div>
+
+<!-- 沉浸 -->
 <div class="modal" id="modal">
 <button class="close" onclick="closeModal()">×</button>
 <div id="modalContent"></div>
@@ -201,13 +243,19 @@ margin-top:10px;
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("v8") || "[]");
+let data = JSON.parse(localStorage.getItem("v9") || "[]");
 
 function save(){
-localStorage.setItem("v8",JSON.stringify(data));
+localStorage.setItem("v9",JSON.stringify(data));
 }
 
-/* ===== 添加 ===== */
+/* 🎬 开场控制 */
+setTimeout(()=>{
+document.getElementById("intro").style.display="none";
+document.getElementById("app").style.display="block";
+},4500);
+
+/* 添加 */
 function add(){
 const title=document.getElementById("title").value;
 const city=document.getElementById("city").value;
@@ -223,7 +271,7 @@ render();
 drawMap();
 }
 
-/* ===== 模式切换 ===== */
+/* 切换 */
 function switchTab(t){
 document.querySelectorAll(".tab").forEach(e=>e.classList.remove("active"));
 event.target.classList.add("active");
@@ -232,7 +280,7 @@ document.getElementById("timelineView").style.display = t==="timeline"?"block":"
 document.getElementById("mapView").style.display = t==="map"?"block":"none";
 }
 
-/* ===== 时间线 ===== */
+/* 时间线 */
 function render(){
 const box=document.getElementById("timelineView");
 box.innerHTML="";
@@ -251,15 +299,32 @@ box.innerHTML+=`
 });
 }
 
-/* ===== 沉浸页 ===== */
+/* 地图 */
+function drawMap(){
+const map=document.getElementById("map");
+map.innerHTML="";
+
+let cities=[...new Set(data.map(d=>d.city))];
+
+let pos={};
+cities.forEach((c,i)=>{
+let x=60+(i*70)%260;
+let y=70+Math.floor(i/4)*80;
+pos[c]={x,y};
+
+map.innerHTML+=`<div class="city" style="left:${x}px;top:${y}px">${c}</div>`;
+});
+}
+
+/* 沉浸 */
 function openModal(i){
 const d=data[i];
 document.getElementById("modal").style.display="flex";
 
 document.getElementById("modalContent").innerHTML=`
 <h2>${d.title}</h2>
-<div>📍 ${d.city}</div>
-<div>📅 ${d.date||""}</div>
+<div class="small">📍 ${d.city}</div>
+<div class="small">📅 ${d.date||""}</div>
 <p style="opacity:.8">${d.note||""}</p>
 ${d.img?`<img src="${d.img}"/>`:""}
 `;
@@ -269,40 +334,7 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* ===== 简易巡演地图 ===== */
-function drawMap(){
-const map=document.getElementById("map");
-map.innerHTML="";
-
-let cities=[...new Set(data.map(d=>d.city))];
-
-let points={};
-cities.forEach((c,i)=>{
-let x=60+(i*60)%260;
-let y=80+Math.floor(i/4)*70;
-
-points[c]={x,y};
-
-map.innerHTML+=`<div class="city" style="left:${x}px;top:${y}px">${c}</div>`;
-});
-
-let arr=cities;
-for(let i=0;i<arr.length-1;i++){
-let a=points[arr[i]];
-let b=points[arr[i+1]];
-if(!a||!b) continue;
-
-let len=Math.hypot(b.x-a.x,b.y-a.y);
-let ang=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
-
-map.innerHTML+=`
-<div class="line"
-style="left:${a.x}px;top:${a.y}px;width:${len}px;transform:rotate(${ang}deg)">
-</div>`;
-}
-}
-
-/* ===== init ===== */
+/* init */
 render();
 drawMap();
 
