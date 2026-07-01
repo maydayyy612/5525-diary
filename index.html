@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>5525 TOUR MEMORY OS V12</title>
+<title>5525 TOUR MEMORY OS V13</title>
 
 <style>
 body{
@@ -13,45 +13,17 @@ background:#05050a;
 color:#fff;
 }
 
-/* ===== 开屏 ===== */
-#intro{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:9999;
-animation:fadeOut 4s ease 4s forwards;
-}
-
-.glow{
-font-size:28px;
-text-shadow:0 0 20px rgba(255,0,60,.6);
-animation:pulse 1.5s infinite alternate;
-}
-
-@keyframes pulse{
-from{transform:scale(1);opacity:.6}
-to{transform:scale(1.06);opacity:1}
-}
-
-@keyframes fadeOut{
-to{opacity:0;visibility:hidden}
-}
-
-/* ===== layout ===== */
+/* ===== header ===== */
 header{
 position:sticky;
 top:0;
-background:rgba(10,10,20,.75);
+background:rgba(10,10,20,.8);
 backdrop-filter: blur(10px);
 padding:10px;
+z-index:10;
 }
 
 .tabs{display:flex;flex-wrap:wrap;gap:6px}
-
 .tab{
 padding:6px 10px;
 border-radius:999px;
@@ -97,85 +69,95 @@ cursor:pointer;
 }
 
 /* ===== timeline ===== */
-.timeline{border-left:2px solid #ff2d55;padding-left:12px}
-.item{margin-bottom:10px;cursor:pointer}
+.timeline{
+border-left:2px solid #ff2d55;
+padding-left:12px;
+}
+
+.item{margin-bottom:10px}
+.summary{cursor:pointer}
+.detail{
+display:none;
+margin-top:8px;
+font-size:13px;
+opacity:.9;
+}
 .thumb{width:100%;border-radius:10px;margin-top:6px}
 
-/* ===== gallery ===== */
-.gallery{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:8px;
+/* ===== song list ===== */
+.songBox{
+max-height:140px;
+overflow:auto;
+padding:8px;
+background:#0f0f18;
+border-radius:10px;
 }
-.gallery img{width:100%;border-radius:10px}
 
 /* ===== map ===== */
 .map{
 position:relative;
 height:420px;
-background:radial-gradient(circle,#111,#05050a);
+background:#0b0b12;
 border-radius:12px;
 overflow:hidden;
 }
 
+svg{
+position:absolute;
+width:100%;
+height:100%;
+opacity:.35;
+}
+
 .city{
 position:absolute;
-width:10px;height:10px;
+width:10px;
+height:10px;
 border-radius:50%;
 background:#ff2d55;
 transform:translate(-50%,-50%);
-cursor:pointer;
 box-shadow:0 0 10px #ff2d55;
+cursor:pointer;
 }
 
-/* ===== search/filter ===== */
-.filterBar{
-display:flex;
-gap:6px;
-margin-bottom:10px;
+.tip{
+position:absolute;
+background:#111;
+padding:8px 10px;
+border-radius:8px;
+font-size:12px;
+display:none;
 }
-
 .small{opacity:.7;font-size:12px}
 </style>
 </head>
 
 <body>
 
-<!-- 🎬 开屏 -->
-<div id="intro">
-  <div class="glow">5525 回到那一天</div>
-  <div class="small">Tour Memory OS V12</div>
-</div>
-
-<!-- APP -->
 <header>
 <div class="tabs">
-<div class="tab active" onclick="switchTab('home')">首页</div>
-<div class="tab" onclick="switchTab('records')">记录</div>
+<div class="tab active" onclick="switchTab('records')">记录</div>
 <div class="tab" onclick="switchTab('timeline')">时间轴</div>
-<div class="tab" onclick="switchTab('gallery')">相册</div>
 <div class="tab" onclick="switchTab('map')">地图</div>
-<div class="tab" onclick="switchTab('stats')">统计</div>
 </div>
 </header>
 
 <div class="container">
 
-<!-- HOME -->
-<div id="home" class="view active"></div>
-
-<!-- RECORDS -->
-<div id="records" class="view">
+<!-- ================= RECORDS ================= -->
+<div id="records" class="view active">
 <div class="card">
 
 <input id="title" placeholder="演出名称">
 <input id="city" placeholder="城市">
 <input id="date" type="date">
 
-<input id="setlist" placeholder="歌单（用逗号分隔）">
+<input id="price" placeholder="票价">
+<input id="seat" placeholder="座位">
 <input id="guest" placeholder="嘉宾">
-<input id="transport" placeholder="交通方式（手动填写）">
+<input id="transport" placeholder="交通方式（手动）">
 
+<textarea id="setlist" placeholder="歌单（每行一首）"></textarea>
 <textarea id="note" placeholder="重要小事"></textarea>
 
 <input type="file" id="img">
@@ -185,43 +167,38 @@ margin-bottom:10px;
 </div>
 </div>
 
-<!-- TIMELINE -->
+<!-- ================= TIMELINE ================= -->
 <div id="timeline" class="view">
-<div class="filterBar">
-<input id="cityFilter" placeholder="按城市筛选" oninput="renderAll()">
-<input id="songSearch" placeholder="按歌名搜索" oninput="renderAll()">
-</div>
 <div id="timelineBox" class="timeline"></div>
 </div>
 
-<!-- GALLERY -->
-<div id="gallery" class="view">
-<div id="galleryBox" class="gallery"></div>
-</div>
-
-<!-- MAP -->
+<!-- ================= MAP ================= -->
 <div id="map" class="view">
-<div class="map" id="mapBox"></div>
-</div>
+<div class="map" id="mapBox">
 
-<!-- STATS -->
-<div id="stats" class="view"></div>
+<svg viewBox="0 0 100 100">
+<path d="M20,15 L80,20 L90,50 L70,85 L40,80 L20,60 Z"
+fill="#fff"/>
+</svg>
+
+<div id="cityDots"></div>
+<div class="tip" id="tip"></div>
+
+</div>
+</div>
 
 </div>
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("v12") || "[]");
+let data = JSON.parse(localStorage.getItem("v13") || "[]");
 
-setTimeout(()=>{
-document.getElementById("intro").style.display="none";
-},4500);
-
+/* ================= save ================= */
 function save(){
-localStorage.setItem("v12",JSON.stringify(data));
+localStorage.setItem("v13",JSON.stringify(data));
 }
 
-/* ===== img ===== */
+/* ================= image ================= */
 let imgData="";
 document.getElementById("img").addEventListener("change",e=>{
 let r=new FileReader();
@@ -229,15 +206,18 @@ r.onload=()=>imgData=r.result;
 r.readAsDataURL(e.target.files[0]);
 });
 
-/* ===== add ===== */
+/* ================= CRUD ================= */
 function add(){
 data.unshift({
+id:Date.now(),
 title:val("title"),
 city:val("city"),
 date:val("date"),
-setlist:val("setlist"),
+price:val("price"),
+seat:val("seat"),
 guest:val("guest"),
 transport:val("transport"),
+setlist:val("setlist").split("\n"),
 note:val("note"),
 img:imgData
 });
@@ -246,141 +226,109 @@ save();
 renderAll();
 }
 
-/* ===== util ===== */
-function val(id){return document.getElementById(id).value}
-
-/* ===== switch ===== */
-function switchTab(t){
-document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-document.querySelectorAll(".tab").forEach(v=>v.classList.remove("active"));
-
-document.getElementById(t).classList.add("active");
-event.target.classList.add("active");
-
+function del(id){
+data=data.filter(d=>d.id!==id);
+save();
 renderAll();
 }
 
-/* ===== HOME ===== */
-function renderHome(){
-let h=document.getElementById("home");
-let last=data[0];
-
-h.innerHTML=`
-<div class="card">
-<h3>最近演出</h3>
-${last?`
-<b>${last.title}</b><br>
-📍 ${last.city}<br>
-🚆 ${last.transport||""}
-`:"暂无"}
-</div>
-
-<div class="card">
-总场次：${data.length}
-</div>
-`;
+function edit(id){
+let d=data.find(x=>x.id===id);
+document.getElementById("title").value=d.title;
+document.getElementById("city").value=d.city;
+document.getElementById("date").value=d.date;
+document.getElementById("price").value=d.price;
+document.getElementById("seat").value=d.seat;
+document.getElementById("guest").value=d.guest;
+document.getElementById("transport").value=d.transport;
+document.getElementById("setlist").value=d.setlist.join("\n");
+document.getElementById("note").value=d.note;
+del(id);
 }
 
-/* ===== TIMELINE ===== */
+/* ================= util ================= */
+function val(id){return document.getElementById(id).value}
+
+/* ================= switch ================= */
+function switchTab(t){
+document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+document.getElementById(t).classList.add("active");
+}
+
+/* ================= timeline ================= */
 function renderTimeline(){
 let box=document.getElementById("timelineBox");
 box.innerHTML="";
 
-let cityF=document.getElementById("cityFilter")?.value?.toLowerCase()||"";
-let songF=document.getElementById("songSearch")?.value?.toLowerCase()||"";
-
-data.filter(d=>{
-let okCity=!cityF||d.city?.toLowerCase().includes(cityF);
-let okSong=!songF||d.setlist?.toLowerCase().includes(songF);
-return okCity&&okSong;
-}).forEach(d=>{
+data.forEach(d=>{
 
 box.innerHTML+=`
 <div class="item">
-<div class="card">
+<div class="card summary" onclick="toggle(this)">
 <b>${d.title}</b><br>
 📍 ${d.city}<br>
-🎧 ${d.setlist||""}<br>
-🚆 ${d.transport||""}
+🎫 ${d.price||""}<br>
+<button onclick="event.stopPropagation();edit(${d.id})">编辑</button>
+<button onclick="event.stopPropagation();del(${d.id})">删除</button>
+</div>
+
+<div class="detail">
+${d.date||""}<br>
+🎤 ${d.guest||""}<br>
+🚆 ${d.transport||""}<br>
+
+<div class="songBox">
+${(d.setlist||[]).map(s=>"🎧 "+s).join("<br>")}
+</div>
+
+<p>${d.note||""}</p>
+
 ${d.img?`<img class="thumb" src="${d.img}">`:""}
 </div>
 </div>`;
 });
 }
 
-/* ===== GALLERY ===== */
-function renderGallery(){
-let box=document.getElementById("galleryBox");
-box.innerHTML="";
-data.filter(d=>d.img).forEach(d=>{
-box.innerHTML+=`<img src="${d.img}">`;
-});
+function toggle(el){
+let d=el.nextElementSibling;
+d.style.display=d.style.display==="block"?"none":"block";
 }
 
-/* ===== MAP (城市点亮 + 交通信息) ===== */
+/* ================= MAP ================= */
 function renderMap(){
-let map=document.getElementById("mapBox");
-map.innerHTML="";
+let box=document.getElementById("cityDots");
+box.innerHTML="";
 
-let cityMap={
-"北京":{x:50,y:40},
-"上海":{x:70,y:65},
-"广州":{x:55,y:85},
-"成都":{x:40,y:60}
+let map={
+"北京":{x:52,y:35,km:0},
+"上海":{x:75,y:60,km:1060},
+"广州":{x:55,y:85,km:1900},
+"成都":{x:40,y:60,km:1800}
 };
 
 data.forEach(d=>{
-let c=cityMap[d.city];
+let c=map[d.city];
 if(!c) return;
 
-let div=document.createElement("div");
-div.className="city";
-div.style.left=c.x+"%";
-div.style.top=c.y+"%";
+let dot=document.createElement("div");
+dot.className="city";
+dot.style.left=c.x+"%";
+dot.style.top=c.y+"%";
 
-div.onclick=()=>{
+dot.onclick=()=>{
 alert(
-`城市：${d.city}\n交通：${d.transport}\n距离北京：约 ${calcDistance(d.city)} km`
+`城市：${d.city}\n交通：${d.transport}\n距离北京：${c.km}km`
 );
 };
 
-map.appendChild(div);
+box.appendChild(dot);
 });
 }
 
-/* 简化距离 */
-function calcDistance(city){
-let map={
-"上海":1060,
-"广州":1900,
-"成都":1800,
-"北京":0
-};
-return map[city]||"未知";
-}
-
-/* ===== STATS ===== */
-function renderStats(){
-let box=document.getElementById("stats");
-
-let cityCount={};
-data.forEach(d=>{
-cityCount[d.city]=(cityCount[d.city]||0)+1;
-});
-
-box.innerHTML=`
-<div class="card">总场次 ${data.length}</div>
-<div class="card">城市数 ${Object.keys(cityCount).length}</div>
-`;
-}
-
-/* ===== render all ===== */
+/* ================= render ================= */
 function renderAll(){
-renderHome();
 renderTimeline();
-renderGallery();
 renderMap();
-renderStats();
 }
 
 renderAll();
