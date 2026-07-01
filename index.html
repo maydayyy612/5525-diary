@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>5525 回到那一天 V9</title>
+<title>5525 TOUR MEMORY OS V10</title>
 
 <style>
 body{
@@ -11,101 +11,51 @@ margin:0;
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
 background:#05050a;
 color:#fff;
-overflow:hidden;
+overflow-x:hidden;
 }
 
-/* ================= 开场电影 ================= */
-#intro{
-position:fixed;
-inset:0;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-z-index:99999;
-animation:fadeOut 4s ease 4s forwards;
-}
-
-.glow{
-font-size:28px;
-letter-spacing:3px;
-font-weight:700;
-text-shadow:0 0 25px rgba(255,0,60,0.6);
-animation:pulse 1.5s ease-in-out infinite alternate;
-}
-
-.sub{
-margin-top:10px;
-font-size:12px;
-opacity:.6;
-}
-
-@keyframes pulse{
-from{transform:scale(1);opacity:.6}
-to{transform:scale(1.06);opacity:1}
-}
-
-@keyframes fadeOut{
-to{opacity:0;visibility:hidden}
-}
-
-/* ================= 主系统 ================= */
-#app{
-display:none;
-height:100vh;
-overflow:hidden;
-}
-
-/* 顶部 */
+/* ===== 顶部导航 ===== */
 header{
-position:fixed;
+position:sticky;
 top:0;
-width:100%;
-padding:14px;
-background:rgba(10,10,20,.6);
-backdrop-filter: blur(12px);
 z-index:10;
+background:rgba(10,10,20,.75);
+backdrop-filter: blur(12px);
+padding:10px;
 }
 
-/* 模式 */
-.tabs{
+.nav{
 display:flex;
-gap:10px;
-padding:10px 14px;
-margin-top:50px;
+flex-wrap:wrap;
+gap:8px;
 }
 
 .tab{
-padding:6px 12px;
+padding:6px 10px;
 border-radius:999px;
 background:#1a1a26;
 font-size:12px;
-opacity:.5;
+opacity:.6;
 cursor:pointer;
 }
-.tab.active{opacity:1;background:#ff2d55}
+.tab.active{background:#ff2d55;opacity:1}
 
-/* 容器 */
-.container{
-padding:14px;
-overflow:auto;
-height:calc(100vh - 110px);
-}
+/* ===== 容器 ===== */
+.container{padding:14px;padding-bottom:120px}
 
-/* 卡片 */
+/* ===== 卡片 ===== */
 .card{
 background:linear-gradient(135deg,#1a1a26,#0e0e18);
-padding:14px;
-border-radius:16px;
+padding:12px;
+border-radius:14px;
 margin-bottom:12px;
 border:1px solid #222;
 }
 
-/* 输入 */
-input,textarea{
+/* ===== 输入 ===== */
+input,textarea,select{
 width:100%;
-margin-top:8px;
+margin-top:6px;
 padding:10px;
 border-radius:10px;
 border:none;
@@ -113,66 +63,81 @@ background:#141420;
 color:#fff;
 }
 
-/* 按钮 */
+/* ===== 按钮 ===== */
 button{
-padding:10px 12px;
+padding:10px;
 border:none;
 border-radius:10px;
-cursor:pointer;
 background:#ff2d55;
 color:#fff;
-}
-
-/* ================= 时间线 ================= */
-.timeline{
-border-left:2px solid #ff2d55;
-padding-left:16px;
-}
-
-.item{
-position:relative;
-margin-bottom:14px;
 cursor:pointer;
 }
 
+/* ===== 模块隐藏 ===== */
+.view{display:none}
+.view.active{display:block}
+
+/* ===== timeline ===== */
+.timeline{
+border-left:2px solid #ff2d55;
+padding-left:14px;
+}
+
+.item{margin-bottom:12px;cursor:pointer}
 .dot{
 position:absolute;
-left:-20px;
-top:10px;
-width:10px;
-height:10px;
+left:-18px;
+width:10px;height:10px;
 border-radius:50%;
 background:#ff2d55;
 box-shadow:0 0 10px #ff2d55;
 }
 
-/* ================= 地图 ================= */
+/* ===== map ===== */
 .map{
+height:300px;
+border-radius:14px;
+background:radial-gradient(circle,#111,#05050a);
 position:relative;
-height:320px;
-border-radius:16px;
-background:radial-gradient(circle at center,#111,#05050a);
 overflow:hidden;
 }
 
 .city{
 position:absolute;
 padding:6px 10px;
-background:#ff2d55;
 border-radius:999px;
+background:#ff2d55;
 font-size:12px;
 transform:translate(-50%,-50%);
 }
 
-/* ================= 沉浸页 ================= */
+/* ===== stats ===== */
+.stat{
+padding:10px;
+background:#141420;
+border-radius:12px;
+margin-bottom:10px;
+}
+
+/* ===== gallery ===== */
+.gallery{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+.gallery img{
+width:100%;
+border-radius:12px;
+}
+
+/* ===== modal ===== */
 .modal{
 position:fixed;
 inset:0;
 background:rgba(0,0,0,.92);
 display:none;
-flex-direction:column;
 padding:20px;
-z-index:999;
+z-index:99;
 overflow:auto;
 }
 
@@ -180,62 +145,80 @@ overflow:auto;
 position:fixed;
 top:20px;
 right:20px;
-width:40px;
-height:40px;
+width:40px;height:40px;
 border-radius:50%;
 background:#ff2d55;
 border:none;
 color:#fff;
 }
-img{width:100%;border-radius:12px;margin-top:10px}
-.small{opacity:.7;font-size:12px}
 </style>
 </head>
 
 <body>
 
-<!-- 🎬 开场电影 -->
-<div id="intro">
-  <div class="glow">5525 回到那一天</div>
-  <div class="sub">Tour Memory System · Loading Memories...</div>
+<header>
+<div class="nav">
+<div class="tab active" onclick="switchView('home')">首页</div>
+<div class="tab" onclick="switchView('records')">记录</div>
+<div class="tab" onclick="switchView('timeline')">时间轴</div>
+<div class="tab" onclick="switchView('gallery')">相册</div>
+<div class="tab" onclick="switchView('map')">地图</div>
+<div class="tab" onclick="switchView('stats')">统计</div>
+<div class="tab" onclick="switchView('recap')">年度</div>
 </div>
-
-<!-- 🎭 主应用 -->
-<div id="app">
-
-<header>🎭 5525 · V9 沉浸巡演电影</header>
-
-<div class="tabs">
-<div class="tab active" onclick="switchTab('timeline')">时间线</div>
-<div class="tab" onclick="switchTab('map')">巡演地图</div>
-</div>
+</header>
 
 <div class="container">
 
-<!-- 输入 -->
+<!-- ================= HOME ================= -->
+<div id="home" class="view active"></div>
+
+<!-- ================= RECORDS ================= -->
+<div id="records" class="view">
 <div class="card">
-<h3>➕ 新增演出记忆</h3>
-<input id="title" placeholder="演出名称"/>
-<input id="city" placeholder="城市"/>
-<input id="date" type="date"/>
-<textarea id="note" placeholder="现场记忆"></textarea>
-<input id="img" placeholder="图片链接（可选）"/>
-<button onclick="add()">加入巡演</button>
+<h3>➕ 新增演出</h3>
+<input id="title" placeholder="演出名称">
+<input id="city" placeholder="城市">
+<input id="date" type="date">
+<select id="mood">
+<option>✨ 感动</option>
+<option>🔥 爆炸</option>
+<option>🎧 沉浸</option>
+<option>🌙 平静</option>
+</select>
+
+<textarea id="note" placeholder="回忆"></textarea>
+
+<input type="file" id="imgFile" accept="image/*">
+
+<button onclick="add()">保存</button>
+</div>
 </div>
 
-<!-- 时间线 -->
-<div id="timelineView"></div>
-
-<!-- 地图 -->
-<div id="mapView" style="display:none">
-<div class="map" id="map"></div>
+<!-- ================= TIMELINE ================= -->
+<div id="timeline" class="view">
+<div id="timelineBox" class="timeline"></div>
 </div>
 
+<!-- ================= GALLERY ================= -->
+<div id="gallery" class="view">
+<div id="galleryBox" class="gallery"></div>
 </div>
+
+<!-- ================= MAP ================= -->
+<div id="map" class="view">
+<div id="mapBox" class="map"></div>
+</div>
+
+<!-- ================= STATS ================= -->
+<div id="stats" class="view"></div>
+
+<!-- ================= RECAP ================= -->
+<div id="recap" class="view"></div>
 
 </div>
 
-<!-- 沉浸 -->
+<!-- modal -->
 <div class="modal" id="modal">
 <button class="close" onclick="closeModal()">×</button>
 <div id="modalContent"></div>
@@ -243,90 +226,163 @@ img{width:100%;border-radius:12px;margin-top:10px}
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("v9") || "[]");
+let data = JSON.parse(localStorage.getItem("v10") || "[]");
 
 function save(){
-localStorage.setItem("v9",JSON.stringify(data));
+localStorage.setItem("v10",JSON.stringify(data));
 }
 
-/* 🎬 开场控制 */
-setTimeout(()=>{
-document.getElementById("intro").style.display="none";
-document.getElementById("app").style.display="block";
-},4500);
+/* ===== 图片上传 ===== */
+let tempImg="";
+document.getElementById("imgFile").addEventListener("change",e=>{
+let reader=new FileReader();
+reader.onload=()=>tempImg=reader.result;
+reader.readAsDataURL(e.target.files[0]);
+});
 
-/* 添加 */
+/* ===== 添加 ===== */
 function add(){
-const title=document.getElementById("title").value;
-const city=document.getElementById("city").value;
-const date=document.getElementById("date").value;
-const note=document.getElementById("note").value;
-const img=document.getElementById("img").value;
+const t=document.getElementById("title").value;
+const c=document.getElementById("city").value;
+const d=document.getElementById("date").value;
+const m=document.getElementById("mood").value;
+const n=document.getElementById("note").value;
 
-if(!title||!city) return;
+if(!t||!c)return;
 
-data.unshift({title,city,date,note,img});
+data.unshift({title:t,city:c,date:d,mood:m,note:n,img:tempImg});
+tempImg="";
 save();
-render();
-drawMap();
+renderAll();
 }
 
-/* 切换 */
-function switchTab(t){
-document.querySelectorAll(".tab").forEach(e=>e.classList.remove("active"));
+/* ===== 切换 ===== */
+function switchView(v){
+document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+
+document.getElementById(v).classList.add("active");
 event.target.classList.add("active");
 
-document.getElementById("timelineView").style.display = t==="timeline"?"block":"none";
-document.getElementById("mapView").style.display = t==="map"?"block":"none";
+renderAll();
 }
 
-/* 时间线 */
-function render(){
-const box=document.getElementById("timelineView");
-box.innerHTML="";
+/* ===== HOME ===== */
+function renderHome(){
+const h=document.getElementById("home");
 
+let last=data[0];
+
+h.innerHTML=`
+<div class="card">
+<h2>🎭 最近演出</h2>
+${last?`
+<b>${last.title}</b>
+<div>📍 ${last.city}</div>
+<div>${last.date||""}</div>
+<div>${last.mood}</div>
+`:"暂无数据"}
+</div>
+
+<div class="card">
+<h3>🔥 高光回忆</h3>
+${data.slice(0,3).map(d=>`<div>• ${d.title} - ${d.city}</div>`).join("")}
+</div>
+
+<div class="card">
+<h3>📊 快速统计</h3>
+<div>场次：${data.length}</div>
+<div>城市：${new Set(data.map(d=>d.city)).size}</div>
+</div>
+`;
+}
+
+/* ===== RECORDS ===== */
+
+/* ===== TIMELINE ===== */
+function renderTimeline(){
+const box=document.getElementById("timelineBox");
+box.innerHTML="";
 data.forEach((d,i)=>{
 box.innerHTML+=`
 <div class="item" onclick="openModal(${i})">
-<div class="dot"></div>
 <div class="card">
 <b>${d.title}</b>
-<div class="small">📍 ${d.city}</div>
-<div class="small">📅 ${d.date||""}</div>
-<div class="small">${d.note||""}</div>
+<div>📍 ${d.city}</div>
+<div>${d.date||""}</div>
+<div>${d.mood}</div>
 </div>
 </div>`;
 });
 }
 
-/* 地图 */
-function drawMap(){
-const map=document.getElementById("map");
-map.innerHTML="";
+/* ===== GALLERY ===== */
+function renderGallery(){
+const box=document.getElementById("galleryBox");
+box.innerHTML="";
+data.filter(d=>d.img).forEach(d=>{
+box.innerHTML+=`<img src="${d.img}">`;
+});
+}
+
+/* ===== MAP ===== */
+function renderMap(){
+const box=document.getElementById("mapBox");
+box.innerHTML="";
 
 let cities=[...new Set(data.map(d=>d.city))];
 
 let pos={};
 cities.forEach((c,i)=>{
 let x=60+(i*70)%260;
-let y=70+Math.floor(i/4)*80;
+let y=80+Math.floor(i/4)*80;
 pos[c]={x,y};
 
-map.innerHTML+=`<div class="city" style="left:${x}px;top:${y}px">${c}</div>`;
+box.innerHTML+=`<div class="city" style="left:${x}px;top:${y}px">${c}</div>`;
 });
 }
 
-/* 沉浸 */
+/* ===== STATS ===== */
+function renderStats(){
+const box=document.getElementById("stats");
+
+let cityCount={};
+data.forEach(d=>{
+cityCount[d.city]=(cityCount[d.city]||0)+1;
+});
+
+let topCity=Object.entries(cityCount).sort((a,b)=>b[1]-a[1])[0];
+
+box.innerHTML=`
+<div class="stat">🎤 总场次：${data.length}</div>
+<div class="stat">🌍 城市数：${Object.keys(cityCount).length}</div>
+<div class="stat">🏆 最常城市：${topCity?topCity[0]:"-"}</div>
+`;
+}
+
+/* ===== RECAP ===== */
+function renderRecap(){
+const box=document.getElementById("recap");
+
+box.innerHTML=`
+<div class="card">
+<h2>🌌 年度回顾</h2>
+<p>你这一年共走过 ${new Set(data.map(d=>d.city)).size} 个城市，记录了 ${data.length} 场演出。</p>
+<p>这是你的巡演记忆轨迹。</p>
+</div>
+`;
+}
+
+/* ===== MODAL ===== */
 function openModal(i){
 const d=data[i];
-document.getElementById("modal").style.display="flex";
-
+document.getElementById("modal").style.display="block";
 document.getElementById("modalContent").innerHTML=`
 <h2>${d.title}</h2>
-<div class="small">📍 ${d.city}</div>
-<div class="small">📅 ${d.date||""}</div>
-<p style="opacity:.8">${d.note||""}</p>
-${d.img?`<img src="${d.img}"/>`:""}
+<div>${d.city}</div>
+<div>${d.date||""}</div>
+<p>${d.note||""}</p>
+${d.img?`<img src="${d.img}" style="width:100%">`:""}
 `;
 }
 
@@ -334,9 +390,17 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* init */
-render();
-drawMap();
+/* ===== render all ===== */
+function renderAll(){
+renderHome();
+renderTimeline();
+renderGallery();
+renderMap();
+renderStats();
+renderRecap();
+}
+
+renderAll();
 
 </script>
 
