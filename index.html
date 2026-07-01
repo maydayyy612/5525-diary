@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>5525 TOUR MEMORY OS V13</title>
+<title>5525 TOUR MEMORY OS V14</title>
 
 <style>
 body{
@@ -13,17 +13,18 @@ background:#05050a;
 color:#fff;
 }
 
-/* ===== header ===== */
+/* ================= header ================= */
 header{
 position:sticky;
 top:0;
-background:rgba(10,10,20,.8);
+background:rgba(10,10,20,.85);
 backdrop-filter: blur(10px);
 padding:10px;
 z-index:10;
 }
 
 .tabs{display:flex;flex-wrap:wrap;gap:6px}
+
 .tab{
 padding:6px 10px;
 border-radius:999px;
@@ -34,12 +35,12 @@ cursor:pointer;
 }
 .tab.active{background:#ff2d55;opacity:1}
 
+/* ================= layout ================= */
 .container{padding:14px;padding-bottom:120px}
-
 .view{display:none}
 .view.active{display:block}
 
-/* ===== card ===== */
+/* ================= card ================= */
 .card{
 background:#141420;
 padding:12px;
@@ -47,7 +48,7 @@ border-radius:12px;
 margin-bottom:10px;
 }
 
-/* ===== input ===== */
+/* ================= input ================= */
 input,textarea{
 width:100%;
 margin-top:6px;
@@ -58,42 +59,35 @@ background:#1a1a26;
 color:#fff;
 }
 
-/* ===== button ===== */
+/* ================= button ================= */
 button{
-padding:10px;
+padding:8px 10px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 background:#ff2d55;
 color:#fff;
 cursor:pointer;
+font-size:12px;
 }
 
-/* ===== timeline ===== */
-.timeline{
-border-left:2px solid #ff2d55;
-padding-left:12px;
-}
-
+/* ================= timeline ================= */
+.timeline{border-left:2px solid #ff2d55;padding-left:12px}
 .item{margin-bottom:10px}
+
 .summary{cursor:pointer}
-.detail{
-display:none;
-margin-top:8px;
-font-size:13px;
-opacity:.9;
-}
+.detail{display:none;margin-top:8px;font-size:13px;opacity:.9}
+
 .thumb{width:100%;border-radius:10px;margin-top:6px}
 
-/* ===== song list ===== */
-.songBox{
-max-height:140px;
-overflow:auto;
-padding:8px;
-background:#0f0f18;
-border-radius:10px;
+/* ================= gallery ================= */
+.gallery{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
 }
+.gallery img{width:100%;border-radius:10px}
 
-/* ===== map ===== */
+/* ================= map ================= */
 .map{
 position:relative;
 height:420px;
@@ -128,6 +122,21 @@ border-radius:8px;
 font-size:12px;
 display:none;
 }
+
+/* ================= filter ================= */
+.filterBar{
+display:flex;
+gap:6px;
+margin-bottom:10px;
+}
+
+/* ================= stats ================= */
+.stat{
+background:#141420;
+padding:10px;
+border-radius:10px;
+margin-bottom:8px;
+}
 .small{opacity:.7;font-size:12px}
 </style>
 </head>
@@ -136,16 +145,22 @@ display:none;
 
 <header>
 <div class="tabs">
-<div class="tab active" onclick="switchTab('records')">记录</div>
+<div class="tab active" onclick="switchTab('home')">首页</div>
+<div class="tab" onclick="switchTab('records')">记录</div>
 <div class="tab" onclick="switchTab('timeline')">时间轴</div>
+<div class="tab" onclick="switchTab('gallery')">相册</div>
 <div class="tab" onclick="switchTab('map')">地图</div>
+<div class="tab" onclick="switchTab('stats')">统计</div>
 </div>
 </header>
 
 <div class="container">
 
+<!-- ================= HOME ================= -->
+<div id="home" class="view active"></div>
+
 <!-- ================= RECORDS ================= -->
-<div id="records" class="view active">
+<div id="records" class="view">
 <div class="card">
 
 <input id="title" placeholder="演出名称">
@@ -169,7 +184,16 @@ display:none;
 
 <!-- ================= TIMELINE ================= -->
 <div id="timeline" class="view">
+<div class="filterBar">
+<input id="cityFilter" placeholder="按城市筛选" oninput="renderAll()">
+<input id="songSearch" placeholder="按歌名搜索" oninput="renderAll()">
+</div>
 <div id="timelineBox" class="timeline"></div>
+</div>
+
+<!-- ================= GALLERY ================= -->
+<div id="gallery" class="view">
+<div id="galleryBox" class="gallery"></div>
 </div>
 
 <!-- ================= MAP ================= -->
@@ -187,15 +211,18 @@ fill="#fff"/>
 </div>
 </div>
 
+<!-- ================= STATS ================= -->
+<div id="stats" class="view"></div>
+
 </div>
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("v13") || "[]");
+let data = JSON.parse(localStorage.getItem("v14") || "[]");
 
 /* ================= save ================= */
 function save(){
-localStorage.setItem("v13",JSON.stringify(data));
+localStorage.setItem("v14",JSON.stringify(data));
 }
 
 /* ================= image ================= */
@@ -217,7 +244,7 @@ price:val("price"),
 seat:val("seat"),
 guest:val("guest"),
 transport:val("transport"),
-setlist:val("setlist").split("\n"),
+setlist:val("setlist").split("\n").filter(s=>s),
 note:val("note"),
 img:imgData
 });
@@ -226,28 +253,34 @@ save();
 renderAll();
 }
 
+/* 编辑 */
+function edit(id){
+let d=data.find(x=>x.id===id);
+
+fill("title",d.title);
+fill("city",d.city);
+fill("date",d.date);
+fill("price",d.price);
+fill("seat",d.seat);
+fill("guest",d.guest);
+fill("transport",d.transport);
+fill("setlist",d.setlist.join("\n"));
+fill("note",d.note);
+
+data=data.filter(x=>x.id!==id);
+save();
+renderAll();
+}
+
+/* 删除 */
 function del(id){
 data=data.filter(d=>d.id!==id);
 save();
 renderAll();
 }
 
-function edit(id){
-let d=data.find(x=>x.id===id);
-document.getElementById("title").value=d.title;
-document.getElementById("city").value=d.city;
-document.getElementById("date").value=d.date;
-document.getElementById("price").value=d.price;
-document.getElementById("seat").value=d.seat;
-document.getElementById("guest").value=d.guest;
-document.getElementById("transport").value=d.transport;
-document.getElementById("setlist").value=d.setlist.join("\n");
-document.getElementById("note").value=d.note;
-del(id);
-}
-
-/* ================= util ================= */
 function val(id){return document.getElementById(id).value}
+function fill(id,v){document.getElementById(id).value=v||""}
 
 /* ================= switch ================= */
 function switchTab(t){
@@ -255,30 +288,58 @@ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
 document.getElementById(t).classList.add("active");
 }
 
-/* ================= timeline ================= */
+/* ================= HOME ================= */
+function renderHome(){
+let h=document.getElementById("home");
+let last=data[0];
+
+h.innerHTML=`
+<div class="card">
+<h3>最近演出</h3>
+${last?`
+<b>${last.title}</b><br>
+📍 ${last.city}<br>
+🚆 ${last.transport||""}
+`:"暂无"}
+</div>
+
+<div class="card">
+总场次：${data.length}<br>
+城市数：${new Set(data.map(d=>d.city)).size}
+</div>
+`;
+}
+
+/* ================= TIMELINE ================= */
 function renderTimeline(){
 let box=document.getElementById("timelineBox");
 box.innerHTML="";
 
-data.forEach(d=>{
+let cityF=document.getElementById("cityFilter")?.value?.toLowerCase()||"";
+let songF=document.getElementById("songSearch")?.value?.toLowerCase()||"";
+
+data.filter(d=>{
+return (!cityF||d.city?.toLowerCase().includes(cityF))
+&& (!songF||d.setlist?.join(" ").toLowerCase().includes(songF));
+}).forEach(d=>{
 
 box.innerHTML+=`
 <div class="item">
 <div class="card summary" onclick="toggle(this)">
 <b>${d.title}</b><br>
-📍 ${d.city}<br>
-🎫 ${d.price||""}<br>
+📍 ${d.city}
+<br>
 <button onclick="event.stopPropagation();edit(${d.id})">编辑</button>
 <button onclick="event.stopPropagation();del(${d.id})">删除</button>
 </div>
 
 <div class="detail">
-${d.date||""}<br>
+📅 ${d.date||""}<br>
 🎤 ${d.guest||""}<br>
 🚆 ${d.transport||""}<br>
 
-<div class="songBox">
-${(d.setlist||[]).map(s=>"🎧 "+s).join("<br>")}
+<div class="card">
+${d.setlist.map(s=>"🎧 "+s).join("<br>")}
 </div>
 
 <p>${d.note||""}</p>
@@ -292,6 +353,15 @@ ${d.img?`<img class="thumb" src="${d.img}">`:""}
 function toggle(el){
 let d=el.nextElementSibling;
 d.style.display=d.style.display==="block"?"none":"block";
+}
+
+/* ================= GALLERY ================= */
+function renderGallery(){
+let box=document.getElementById("galleryBox");
+box.innerHTML="";
+data.filter(d=>d.img).forEach(d=>{
+box.innerHTML+=`<img src="${d.img}">`;
+});
 }
 
 /* ================= MAP ================= */
@@ -325,10 +395,28 @@ box.appendChild(dot);
 });
 }
 
+/* ================= STATS ================= */
+function renderStats(){
+let box=document.getElementById("stats");
+
+let cityCount={};
+data.forEach(d=>{
+cityCount[d.city]=(cityCount[d.city]||0)+1;
+});
+
+box.innerHTML=`
+<div class="stat">总场次：${data.length}</div>
+<div class="stat">城市数：${Object.keys(cityCount).length}</div>
+`;
+}
+
 /* ================= render ================= */
 function renderAll(){
+renderHome();
 renderTimeline();
+renderGallery();
 renderMap();
+renderStats();
 }
 
 renderAll();
