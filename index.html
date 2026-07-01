@@ -1,286 +1,311 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>5525 演出人生 V6</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a0a0f">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
-  });
-}
-</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>5525 回到那一天 V8</title>
 
 <style>
-
-/* ===== 基础 ===== */
 body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
-    background:#0a0a0f;
-    color:#fff;
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+background:#05050a;
+color:#fff;
+overflow-x:hidden;
 }
 
-/* ===== 启动页（升级版舞台感） ===== */
-#splash{
-    position:fixed;
-    inset:0;
-    background: radial-gradient(circle at 50% 40%, #3a000a, #000);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    animation: fadeOut 2.8s ease 2.8s forwards;
-}
-
-.logo{
-    font-size:28px;
-    font-weight:700;
-    letter-spacing:3px;
-    text-shadow:0 0 20px rgba(255,0,60,0.5);
-    animation: glow 1.5s ease-in-out infinite alternate;
-}
-
-.sub{
-    margin-top:10px;
-    opacity:0.7;
-    font-size:13px;
-}
-
-@keyframes glow{
-    from{transform:scale(1); opacity:0.7;}
-    to{transform:scale(1.05); opacity:1;}
-}
-
-@keyframes fadeOut{
-    to{opacity:0; visibility:hidden;}
-}
-
-/* ===== header ===== */
+/* ===== 顶部 ===== */
 header{
-    padding:18px;
-    font-size:18px;
-    font-weight:600;
-    background:#120006;
-    position:sticky;
-    top:0;
-    border-bottom:1px solid #2a0a12;
+position:sticky;
+top:0;
+padding:16px;
+background:rgba(10,10,20,.7);
+backdrop-filter: blur(10px);
+z-index:10;
+border-bottom:1px solid #222;
 }
 
-/* ===== layout ===== */
-.container{padding:16px;}
+/* ===== 模式切换 ===== */
+.tabs{
+display:flex;
+gap:10px;
+padding:10px 16px;
+}
 
+.tab{
+padding:6px 12px;
+border-radius:999px;
+background:#1a1a26;
+font-size:12px;
+cursor:pointer;
+opacity:.6;
+}
+.tab.active{opacity:1;background:#ff2d55;}
+
+/* ===== 容器 ===== */
+.container{padding:16px;padding-bottom:120px;}
+
+/* ===== 卡片 ===== */
 .card{
-    background:#14141c;
-    padding:14px;
-    border-radius:16px;
-    margin-bottom:14px;
-    border:1px solid #2a0a12;
-    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+background:linear-gradient(135deg,#1a1a26,#0e0e18);
+padding:14px;
+border-radius:16px;
+margin-bottom:12px;
+border:1px solid #222;
 }
 
-/* ===== input ===== */
-input,textarea,select{
-    width:100%;
-    margin-top:6px;
-    margin-bottom:10px;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    background:#1f1f2a;
-    color:white;
+/* ===== 输入 ===== */
+input,textarea{
+width:100%;
+margin-top:8px;
+padding:10px;
+border-radius:10px;
+border:none;
+background:#141420;
+color:#fff;
 }
 
-/* ===== buttons ===== */
+/* ===== 按钮 ===== */
 button{
-    padding:10px 12px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
+padding:10px 12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#ff2d55;
+color:#fff;
 }
 
-.btn-add{background:#ff0033;color:#fff;}
-.btn-del{background:#333;color:#fff;}
-.btn-edit{background:#2d7dff;color:#fff;}
-
-/* ===== timeline ===== */
+/* ===== 时间线 ===== */
 .timeline{
-    position:relative;
-    padding-left:16px;
-    border-left:2px solid #ff0033;
+border-left:2px solid #ff2d55;
+padding-left:16px;
+margin-top:10px;
 }
 
 .item{
-    margin-bottom:14px;
-    position:relative;
+position:relative;
+margin-bottom:14px;
+cursor:pointer;
 }
 
 .dot{
-    position:absolute;
-    left:-20px;
-    top:12px;
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#ff0033;
-    box-shadow:0 0 10px #ff0033;
+position:absolute;
+left:-20px;
+top:12px;
+width:10px;
+height:10px;
+background:#ff2d55;
+border-radius:50%;
+box-shadow:0 0 10px #ff2d55;
 }
 
-.item-card{
-    background:#14141c;
-    padding:12px;
-    border-radius:14px;
-    border:1px solid #2a0a12;
+.small{opacity:.7;font-size:12px}
+
+/* ===== 地图（巡演线） ===== */
+.map{
+position:relative;
+height:300px;
+background:radial-gradient(circle at center,#111,#05050a);
+border-radius:16px;
+overflow:hidden;
 }
 
-.title{
-    font-size:16px;
-    font-weight:600;
+.city{
+position:absolute;
+padding:6px 10px;
+background:#ff2d55;
+border-radius:999px;
+font-size:12px;
+transform:translate(-50%,-50%);
 }
 
-.meta{
-    font-size:12px;
-    opacity:0.75;
-    margin-top:4px;
+.line{
+position:absolute;
+height:2px;
+background:#ff2d55;
+opacity:.4;
+transform-origin:left;
 }
 
-.mood{
-    display:inline-block;
-    margin-top:6px;
-    font-size:12px;
-    padding:4px 8px;
-    border-radius:8px;
-    background:#ff0033;
+/* ===== 沉浸页 ===== */
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.9);
+display:none;
+flex-direction:column;
+padding:20px;
+overflow:auto;
+z-index:99;
+}
+
+.modal h2{
+margin-top:10px;
+}
+
+.close{
+position:fixed;
+top:20px;
+right:20px;
+background:#ff2d55;
+border:none;
+border-radius:50%;
+width:40px;height:40px;
+}
+
+img{
+width:100%;
+border-radius:12px;
+margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔥 启动页 -->
-<div id="splash">
-    <div class="logo">5525 回到那一天</div>
-    <div class="sub">Live Memory · Your Concert Timeline</div>
-</div>
+<header>🎭 5525 · 回到那一天（V8 沉浸巡演版）</header>
 
-<header>🎭 5525 演出人生 V6</header>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('timeline')">时间线</div>
+<div class="tab" onclick="switchTab('map')">巡演地图</div>
+</div>
 
 <div class="container">
 
+<!-- ===== 输入 ===== -->
 <div class="card">
 <h3>➕ 添加演出</h3>
-
-<input id="title" placeholder="演出名称">
-<input id="city" placeholder="城市 / 场馆">
-<input id="date" type="date">
-
-<select id="mood">
-<option value="✨ 感动">✨ 感动</option>
-<option value="🔥 爆炸">🔥 爆炸</option>
-<option value="🎧 沉浸">🎧 沉浸</option>
-<option value="🌙 平静">🌙 平静</option>
-</select>
-
-<textarea id="note" placeholder="记忆 / 心情"></textarea>
-
-<button class="btn-add" onclick="addShow()">保存演出</button>
+<input id="title" placeholder="演出名称"/>
+<input id="city" placeholder="城市（如 上海 / 东京）"/>
+<input id="date" type="date"/>
+<textarea id="note" placeholder="记忆 / 现场感受"></textarea>
+<input id="img" placeholder="图片链接（可选）"/>
+<button onclick="add()">加入巡演记忆</button>
 </div>
 
-<div class="card">
-<input id="search" placeholder="🔍 搜索演出 / 城市" oninput="render()">
+<!-- ===== 时间线 ===== -->
+<div id="timelineView"></div>
+
+<!-- ===== 地图 ===== -->
+<div id="mapView" style="display:none">
+<div class="map" id="map"></div>
 </div>
 
-<div id="list" class="timeline"></div>
+</div>
 
+<!-- ===== 沉浸页 ===== -->
+<div class="modal" id="modal">
+<button class="close" onclick="closeModal()">×</button>
+<div id="modalContent"></div>
 </div>
 
 <script>
 
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-}, 2800);
-
-let shows = JSON.parse(localStorage.getItem("shows") || "[]");
+let data = JSON.parse(localStorage.getItem("v8") || "[]");
 
 function save(){
-    localStorage.setItem("shows", JSON.stringify(shows));
+localStorage.setItem("v8",JSON.stringify(data));
 }
 
-function addShow(){
-    let title = document.getElementById("title").value;
-    let city = document.getElementById("city").value;
-    let date = document.getElementById("date").value;
-    let note = document.getElementById("note").value;
-    let mood = document.getElementById("mood").value;
+/* ===== 添加 ===== */
+function add(){
+const title=document.getElementById("title").value;
+const city=document.getElementById("city").value;
+const date=document.getElementById("date").value;
+const note=document.getElementById("note").value;
+const img=document.getElementById("img").value;
 
-    if(!title) return;
+if(!title||!city) return;
 
-    shows.unshift({title,city,date,note,mood});
-    save();
-    render();
-}
-
-function deleteShow(i){
-    shows.splice(i,1);
-    save();
-    render();
-}
-
-function editShow(i){
-    let s = shows[i];
-
-    shows[i] = {
-        title: prompt("名称", s.title),
-        city: prompt("城市", s.city),
-        date: prompt("日期", s.date),
-        note: prompt("心情", s.note),
-        mood: s.mood
-    };
-
-    save();
-    render();
-}
-
-function render(){
-    let list = document.getElementById("list");
-    let key = document.getElementById("search").value?.toLowerCase() || "";
-
-    list.innerHTML="";
-
-    shows.filter(s =>
-        (s.title||"").toLowerCase().includes(key) ||
-        (s.city||"").toLowerCase().includes(key)
-    ).forEach((s,i)=>{
-        list.innerHTML += `
-        <div class="item">
-            <div class="dot"></div>
-            <div class="item-card">
-                <div class="title">${s.title}</div>
-                <div class="meta">📍 ${s.city||""}</div>
-                <div class="meta">📅 ${s.date||""}</div>
-                <div class="mood">${s.mood||""}</div>
-                <div class="meta">${s.note||""}</div>
-
-                <div style="margin-top:10px;">
-                    <button class="btn-edit" onclick="editShow(${i})">编辑</button>
-                    <button class="btn-del" onclick="deleteShow(${i})">删除</button>
-                </div>
-            </div>
-        </div>`;
-    });
-}
-
+data.unshift({title,city,date,note,img});
+save();
 render();
+drawMap();
+}
+
+/* ===== 模式切换 ===== */
+function switchTab(t){
+document.querySelectorAll(".tab").forEach(e=>e.classList.remove("active"));
+event.target.classList.add("active");
+
+document.getElementById("timelineView").style.display = t==="timeline"?"block":"none";
+document.getElementById("mapView").style.display = t==="map"?"block":"none";
+}
+
+/* ===== 时间线 ===== */
+function render(){
+const box=document.getElementById("timelineView");
+box.innerHTML="";
+
+data.forEach((d,i)=>{
+box.innerHTML+=`
+<div class="item" onclick="openModal(${i})">
+<div class="dot"></div>
+<div class="card">
+<b>${d.title}</b>
+<div class="small">📍 ${d.city}</div>
+<div class="small">📅 ${d.date||""}</div>
+<div class="small">${d.note||""}</div>
+</div>
+</div>`;
+});
+}
+
+/* ===== 沉浸页 ===== */
+function openModal(i){
+const d=data[i];
+document.getElementById("modal").style.display="flex";
+
+document.getElementById("modalContent").innerHTML=`
+<h2>${d.title}</h2>
+<div>📍 ${d.city}</div>
+<div>📅 ${d.date||""}</div>
+<p style="opacity:.8">${d.note||""}</p>
+${d.img?`<img src="${d.img}"/>`:""}
+`;
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+
+/* ===== 简易巡演地图 ===== */
+function drawMap(){
+const map=document.getElementById("map");
+map.innerHTML="";
+
+let cities=[...new Set(data.map(d=>d.city))];
+
+let points={};
+cities.forEach((c,i)=>{
+let x=60+(i*60)%260;
+let y=80+Math.floor(i/4)*70;
+
+points[c]={x,y};
+
+map.innerHTML+=`<div class="city" style="left:${x}px;top:${y}px">${c}</div>`;
+});
+
+let arr=cities;
+for(let i=0;i<arr.length-1;i++){
+let a=points[arr[i]];
+let b=points[arr[i+1]];
+if(!a||!b) continue;
+
+let len=Math.hypot(b.x-a.x,b.y-a.y);
+let ang=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+
+map.innerHTML+=`
+<div class="line"
+style="left:${a.x}px;top:${a.y}px;width:${len}px;transform:rotate(${ang}deg)">
+</div>`;
+}
+}
+
+/* ===== init ===== */
+render();
+drawMap();
+
 </script>
 
 </body>
