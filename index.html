@@ -3,96 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5525 演出人生</title>
+<title>5525 演出人生 V2</title>
 
 <style>
 body{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC";
     margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
     background:#0f0f12;
     color:#fff;
 }
 
 header{
-    padding:20px;
-    font-size:20px;
-    font-weight:bold;
+    padding:18px;
+    font-size:18px;
+    font-weight:600;
     background:#1c1c22;
+    position:sticky;
+    top:0;
 }
 
 .container{
-    padding:20px;
+    padding:15px;
 }
 
 .card{
     background:#1c1c22;
-    padding:15px;
-    border-radius:12px;
+    padding:12px;
+    border-radius:14px;
     margin-bottom:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
-input, textarea{
+input,textarea{
     width:100%;
     margin-top:6px;
     margin-bottom:10px;
     padding:10px;
-    border-radius:8px;
+    border-radius:10px;
     border:none;
+    background:#2a2a33;
+    color:white;
 }
 
 button{
-    background:#ff3b5c;
-    color:white;
-    padding:10px 15px;
+    padding:10px 12px;
     border:none;
     border-radius:10px;
     cursor:pointer;
+    margin-right:6px;
 }
 
+.btn-add{background:#ff3b5c;color:#fff;}
+.btn-del{background:#444;color:#fff;}
+.btn-edit{background:#2d7dff;color:#fff;}
+
 .timeline{
-    margin-top:20px;
+    margin-top:15px;
+}
+
+.item-title{
+    font-size:16px;
+    font-weight:600;
+}
+
+.meta{
+    font-size:12px;
+    opacity:0.8;
+    margin-top:4px;
+}
+
+.search{
+    margin-bottom:10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>🎭 5525 演出人生 App</header>
+<header>🎭 5525 演出人生 V2</header>
 
 <div class="container">
 
 <div class="card">
-<h3>➕ 添加一场演出</h3>
+<h3>➕ 添加演出</h3>
 
 <input id="title" placeholder="演出名称">
 <input id="city" placeholder="城市 / 场馆">
 <input id="date" type="date">
-<textarea id="note" placeholder="你的记忆 / 心情"></textarea>
+<textarea id="note" placeholder="记忆 / 心情"></textarea>
 
-<button onclick="addShow()">保存演出</button>
+<button class="btn-add" onclick="addShow()">保存</button>
 </div>
 
-<div class="timeline" id="list"></div>
+<div class="card search">
+<input id="search" placeholder="🔍 搜索演出 / 城市" oninput="render()">
+</div>
+
+<div id="list" class="timeline"></div>
 
 </div>
 
 <script>
 let shows = JSON.parse(localStorage.getItem("shows") || "[]");
 
-function render(){
-    let list = document.getElementById("list");
-    list.innerHTML = "";
-
-    shows.forEach((s,i)=>{
-        list.innerHTML += `
-        <div class="card">
-            <h3>${s.title}</h3>
-            <p>📍 ${s.city}</p>
-            <p>📅 ${s.date}</p>
-            <p>💭 ${s.note}</p>
-        </div>
-        `;
-    });
+function save(){
+    localStorage.setItem("shows", JSON.stringify(shows));
 }
 
 function addShow(){
@@ -101,11 +116,66 @@ function addShow(){
     let date = document.getElementById("date").value;
     let note = document.getElementById("note").value;
 
+    if(!title) return;
+
     shows.unshift({title,city,date,note});
-
-    localStorage.setItem("shows", JSON.stringify(shows));
-
+    save();
+    clearForm();
     render();
+}
+
+function clearForm(){
+    document.getElementById("title").value="";
+    document.getElementById("city").value="";
+    document.getElementById("date").value="";
+    document.getElementById("note").value="";
+}
+
+function deleteShow(i){
+    shows.splice(i,1);
+    save();
+    render();
+}
+
+function editShow(i){
+    let s = shows[i];
+
+    let title = prompt("修改演出名称", s.title);
+    let city = prompt("修改城市/场馆", s.city);
+    let date = prompt("修改日期", s.date);
+    let note = prompt("修改心情", s.note);
+
+    shows[i] = {title,city,date,note};
+    save();
+    render();
+}
+
+function render(){
+    let list = document.getElementById("list");
+    let keyword = document.getElementById("search").value.toLowerCase();
+
+    list.innerHTML = "";
+
+    shows
+    .filter(s =>
+        (s.title||"").toLowerCase().includes(keyword) ||
+        (s.city||"").toLowerCase().includes(keyword)
+    )
+    .forEach((s,i)=>{
+        list.innerHTML += `
+        <div class="card">
+            <div class="item-title">${s.title}</div>
+            <div class="meta">📍 ${s.city || ""}</div>
+            <div class="meta">📅 ${s.date || ""}</div>
+            <div class="meta">💭 ${s.note || ""}</div>
+
+            <div style="margin-top:10px;">
+                <button class="btn-edit" onclick="editShow(${i})">编辑</button>
+                <button class="btn-del" onclick="deleteShow(${i})">删除</button>
+            </div>
+        </div>
+        `;
+    });
 }
 
 render();
