@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>5525 演出人生 V4</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#181a20">
 
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js");
+  });
 }
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5525 演出人生 V3</title>
 
 <style>
 body{
@@ -20,7 +25,6 @@ body{
     color:#fff;
 }
 
-/* 顶部 */
 header{
     padding:18px;
     font-size:18px;
@@ -30,18 +34,15 @@ header{
     top:0;
 }
 
-/* 容器 */
 .container{
     padding:16px;
 }
 
-/* 输入卡片 */
 .card{
     background:#1b1e26;
     padding:14px;
     border-radius:16px;
     margin-bottom:14px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.25);
 }
 
 input,textarea,select{
@@ -53,7 +54,6 @@ input,textarea,select{
     border:none;
     background:#2a2e3a;
     color:white;
-    outline:none;
 }
 
 button{
@@ -64,17 +64,14 @@ button{
     margin-right:6px;
 }
 
-/* 按钮 */
 .btn-add{background:#ff3b5c;color:#fff;}
 .btn-del{background:#444;color:#fff;}
 .btn-edit{background:#2d7dff;color:#fff;}
 
-/* 搜索 */
 .search{
     margin-bottom:10px;
 }
 
-/* 时间轴 */
 .timeline{
     position:relative;
     margin-top:10px;
@@ -82,10 +79,9 @@ button{
     border-left:2px solid #2d7dff;
 }
 
-/* 卡片 */
 .item{
-    position:relative;
     margin-bottom:14px;
+    position:relative;
 }
 
 .dot{
@@ -115,7 +111,6 @@ button{
     margin-top:4px;
 }
 
-/* 情绪标签 */
 .mood{
     display:inline-block;
     margin-top:6px;
@@ -129,7 +124,7 @@ button{
 
 <body>
 
-<header>🎭 5525 演出人生 V3</header>
+<header>🎭 5525 演出人生 V4</header>
 
 <div class="container">
 
@@ -149,102 +144,4 @@ button{
 
 <textarea id="note" placeholder="记忆 / 心情"></textarea>
 
-<button class="btn-add" onclick="addShow()">保存演出</button>
-</div>
-
-<div class="card search">
-<input id="search" placeholder="🔍 搜索演出 / 城市" oninput="render()">
-</div>
-
-<div id="list" class="timeline"></div>
-
-</div>
-
-<script>
-let shows = JSON.parse(localStorage.getItem("shows") || "[]");
-
-function save(){
-    localStorage.setItem("shows", JSON.stringify(shows));
-}
-
-function addShow(){
-    let title = document.getElementById("title").value;
-    let city = document.getElementById("city").value;
-    let date = document.getElementById("date").value;
-    let note = document.getElementById("note").value;
-    let mood = document.getElementById("mood").value;
-
-    if(!title) return;
-
-    shows.unshift({title,city,date,note,mood});
-    save();
-    clearForm();
-    render();
-}
-
-function clearForm(){
-    document.getElementById("title").value="";
-    document.getElementById("city").value="";
-    document.getElementById("date").value="";
-    document.getElementById("note").value="";
-}
-
-function deleteShow(i){
-    shows.splice(i,1);
-    save();
-    render();
-}
-
-function editShow(i){
-    let s = shows[i];
-
-    shows[i] = {
-        title: prompt("名称", s.title),
-        city: prompt("城市", s.city),
-        date: prompt("日期", s.date),
-        note: prompt("心情", s.note),
-        mood: s.mood
-    };
-
-    save();
-    render();
-}
-
-function render(){
-    let list = document.getElementById("list");
-    let keyword = document.getElementById("search").value.toLowerCase();
-
-    list.innerHTML = "";
-
-    shows
-    .filter(s =>
-        (s.title||"").toLowerCase().includes(keyword) ||
-        (s.city||"").toLowerCase().includes(keyword)
-    )
-    .forEach((s,i)=>{
-        list.innerHTML += `
-        <div class="item">
-            <div class="dot"></div>
-
-            <div class="item-card">
-                <div class="title">${s.title}</div>
-                <div class="meta">📍 ${s.city || ""}</div>
-                <div class="meta">📅 ${s.date || ""}</div>
-                <div class="mood">${s.mood || ""}</div>
-                <div class="meta">${s.note || ""}</div>
-
-                <div style="margin-top:10px;">
-                    <button class="btn-edit" onclick="editShow(${i})">编辑</button>
-                    <button class="btn-del" onclick="deleteShow(${i})">删除</button>
-                </div>
-            </div>
-        </div>
-        `;
-    });
-}
-
-render();
-</script>
-
-</body>
-</html>
+<button class="btn-add" onclick="add
