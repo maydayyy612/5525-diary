@@ -3,46 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>5525 演出人生 V2</title>
+<title>5525 演出人生 V3</title>
 
 <style>
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
-    background:#0f0f12;
+    background:#0e0f13;
     color:#fff;
 }
 
+/* 顶部 */
 header{
     padding:18px;
     font-size:18px;
     font-weight:600;
-    background:#1c1c22;
+    background:#181a20;
     position:sticky;
     top:0;
 }
 
+/* 容器 */
 .container{
-    padding:15px;
+    padding:16px;
 }
 
+/* 输入卡片 */
 .card{
-    background:#1c1c22;
-    padding:12px;
-    border-radius:14px;
-    margin-bottom:12px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    background:#1b1e26;
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
 }
 
-input,textarea{
+input,textarea,select{
     width:100%;
     margin-top:6px;
     margin-bottom:10px;
     padding:10px;
     border-radius:10px;
     border:none;
-    background:#2a2a33;
+    background:#2a2e3a;
     color:white;
+    outline:none;
 }
 
 button{
@@ -53,34 +57,72 @@ button{
     margin-right:6px;
 }
 
+/* 按钮 */
 .btn-add{background:#ff3b5c;color:#fff;}
 .btn-del{background:#444;color:#fff;}
 .btn-edit{background:#2d7dff;color:#fff;}
 
-.timeline{
-    margin-top:15px;
+/* 搜索 */
+.search{
+    margin-bottom:10px;
 }
 
-.item-title{
+/* 时间轴 */
+.timeline{
+    position:relative;
+    margin-top:10px;
+    padding-left:14px;
+    border-left:2px solid #2d7dff;
+}
+
+/* 卡片 */
+.item{
+    position:relative;
+    margin-bottom:14px;
+}
+
+.dot{
+    position:absolute;
+    left:-20px;
+    top:12px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#2d7dff;
+}
+
+.item-card{
+    background:#1b1e26;
+    padding:12px;
+    border-radius:14px;
+}
+
+.title{
     font-size:16px;
     font-weight:600;
 }
 
 .meta{
     font-size:12px;
-    opacity:0.8;
+    opacity:0.75;
     margin-top:4px;
 }
 
-.search{
-    margin-bottom:10px;
+/* 情绪标签 */
+.mood{
+    display:inline-block;
+    margin-top:6px;
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:8px;
+    background:#2d7dff;
 }
 </style>
 </head>
 
 <body>
 
-<header>🎭 5525 演出人生 V2</header>
+<header>🎭 5525 演出人生 V3</header>
 
 <div class="container">
 
@@ -90,9 +132,17 @@ button{
 <input id="title" placeholder="演出名称">
 <input id="city" placeholder="城市 / 场馆">
 <input id="date" type="date">
+
+<select id="mood">
+<option value="✨ 感动">✨ 感动</option>
+<option value="🔥 爆炸">🔥 爆炸</option>
+<option value="🎧 沉浸">🎧 沉浸</option>
+<option value="🌙 平静">🌙 平静</option>
+</select>
+
 <textarea id="note" placeholder="记忆 / 心情"></textarea>
 
-<button class="btn-add" onclick="addShow()">保存</button>
+<button class="btn-add" onclick="addShow()">保存演出</button>
 </div>
 
 <div class="card search">
@@ -115,10 +165,11 @@ function addShow(){
     let city = document.getElementById("city").value;
     let date = document.getElementById("date").value;
     let note = document.getElementById("note").value;
+    let mood = document.getElementById("mood").value;
 
     if(!title) return;
 
-    shows.unshift({title,city,date,note});
+    shows.unshift({title,city,date,note,mood});
     save();
     clearForm();
     render();
@@ -140,12 +191,14 @@ function deleteShow(i){
 function editShow(i){
     let s = shows[i];
 
-    let title = prompt("修改演出名称", s.title);
-    let city = prompt("修改城市/场馆", s.city);
-    let date = prompt("修改日期", s.date);
-    let note = prompt("修改心情", s.note);
+    shows[i] = {
+        title: prompt("名称", s.title),
+        city: prompt("城市", s.city),
+        date: prompt("日期", s.date),
+        note: prompt("心情", s.note),
+        mood: s.mood
+    };
 
-    shows[i] = {title,city,date,note};
     save();
     render();
 }
@@ -163,15 +216,20 @@ function render(){
     )
     .forEach((s,i)=>{
         list.innerHTML += `
-        <div class="card">
-            <div class="item-title">${s.title}</div>
-            <div class="meta">📍 ${s.city || ""}</div>
-            <div class="meta">📅 ${s.date || ""}</div>
-            <div class="meta">💭 ${s.note || ""}</div>
+        <div class="item">
+            <div class="dot"></div>
 
-            <div style="margin-top:10px;">
-                <button class="btn-edit" onclick="editShow(${i})">编辑</button>
-                <button class="btn-del" onclick="deleteShow(${i})">删除</button>
+            <div class="item-card">
+                <div class="title">${s.title}</div>
+                <div class="meta">📍 ${s.city || ""}</div>
+                <div class="meta">📅 ${s.date || ""}</div>
+                <div class="mood">${s.mood || ""}</div>
+                <div class="meta">${s.note || ""}</div>
+
+                <div style="margin-top:10px;">
+                    <button class="btn-edit" onclick="editShow(${i})">编辑</button>
+                    <button class="btn-del" onclick="deleteShow(${i})">删除</button>
+                </div>
             </div>
         </div>
         `;
