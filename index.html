@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5525 演出人生</title>
+
+<style>
+body{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC";
+    margin:0;
+    background:#0f0f12;
+    color:#fff;
+}
+
+header{
+    padding:20px;
+    font-size:20px;
+    font-weight:bold;
+    background:#1c1c22;
+}
+
+.container{
+    padding:20px;
+}
+
+.card{
+    background:#1c1c22;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+input, textarea{
+    width:100%;
+    margin-top:6px;
+    margin-bottom:10px;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+}
+
+button{
+    background:#ff3b5c;
+    color:white;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.timeline{
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>🎭 5525 演出人生 App</header>
+
+<div class="container">
+
+<div class="card">
+<h3>➕ 添加一场演出</h3>
+
+<input id="title" placeholder="演出名称">
+<input id="city" placeholder="城市 / 场馆">
+<input id="date" type="date">
+<textarea id="note" placeholder="你的记忆 / 心情"></textarea>
+
+<button onclick="addShow()">保存演出</button>
+</div>
+
+<div class="timeline" id="list"></div>
+
+</div>
+
+<script>
+let shows = JSON.parse(localStorage.getItem("shows") || "[]");
+
+function render(){
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    shows.forEach((s,i)=>{
+        list.innerHTML += `
+        <div class="card">
+            <h3>${s.title}</h3>
+            <p>📍 ${s.city}</p>
+            <p>📅 ${s.date}</p>
+            <p>💭 ${s.note}</p>
+        </div>
+        `;
+    });
+}
+
+function addShow(){
+    let title = document.getElementById("title").value;
+    let city = document.getElementById("city").value;
+    let date = document.getElementById("date").value;
+    let note = document.getElementById("note").value;
+
+    shows.unshift({title,city,date,note});
+
+    localStorage.setItem("shows", JSON.stringify(shows));
+
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>
