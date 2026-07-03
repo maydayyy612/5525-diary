@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5525-DIARY · 演出记录档案馆</title>
+<meta name="description" content="一份私人演出观演记录档案馆，以票根的形式收藏每一场现场。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="board">
+
+  <header class="counter">
+    <div class="counter-left">
+      <p class="eyebrow">ARCHIVE NO. 5525</p>
+      <h1 class="site-title">5525-DIARY</h1>
+      <p class="site-sub">演出记录档案馆 · 每一张票根，都是一次在场的证明</p>
+    </div>
+    <div class="counter-right">
+      <div class="window-field">
+        <label for="search">查 · 找</label>
+        <input type="text" id="search" placeholder="艺人 / 场地 / 城市">
+      </div>
+      <div class="window-field">
+        <label for="sort">排 · 序</label>
+        <select id="sort">
+          <option value="date-desc">日期（最新在前）</option>
+          <option value="date-asc">日期（最早在前）</option>
+          <option value="rating-desc">评分（最高在前）</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main id="grid" class="grid" aria-live="polite">
+    <!-- 票根卡片由 script.js 动态生成 -->
+  </main>
+
+  <p id="empty-state" class="empty-state" hidden>没有找到符合条件的演出记录 —— 换个关键词再找找看。</p>
+
+  <footer class="tally">
+    <span id="count-text">共收藏 0 张演出票根</span>
+    <span class="tally-dot">·</span>
+    <span>持续记录中</span>
+  </footer>
+
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
