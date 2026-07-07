@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1783402524412,
+  "updatedAt": 1783402996066,
   "shows": [
     {
       "id": "show_1783402515468_koenqz",
@@ -16,7 +16,9 @@
         "入阵曲"
       ],
       "notes": "5525内地毕业典礼",
-      "photos": [],
+      "photos": [
+        "photos/show_1783402515468_koenqz/270ed97ce379.jpg"
+      ],
       "createdAt": 1783402515468
     }
   ]
