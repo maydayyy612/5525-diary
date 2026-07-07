@@ -476,6 +476,8 @@ a { color: var(--gold-soft); }
 
 /* ---------- 弹层 ---------- */
 
+.modal[hidden] { display: none; }
+
 .modal {
   position: fixed;
   inset: 0;
